@@ -40,6 +40,8 @@ outputs/
 *.jpg
 !frontend/assets/*.png
 !frontend/assets/*.jpg
+!assets/*.png
+!assets/*.jpg
 
 # Logs
 *.log
