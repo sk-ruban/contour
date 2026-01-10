@@ -264,7 +264,7 @@ function setupMouseControls() {
             const dx = e.clientX - state.lastMouse.x;
             const dy = e.clientY - state.lastMouse.y;
             state.orbitAngle += dx * 0.01;
-            state.orbitPhi = Math.max(0.1, Math.min(Math.PI - 0.1, state.orbitPhi + dy * 0.01));
+            state.orbitPhi = Math.max(0.1, Math.min(Math.PI / 2 - 0.1, state.orbitPhi + dy * 0.01));
             state.lastMouse = { x: e.clientX, y: e.clientY };
             updateOrbitCamera();
         } else if (state.cameraMode === 'fly' && document.pointerLockElement === canvas) {
