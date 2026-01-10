@@ -1,0 +1,55 @@
+# Environment
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Data files (large)
+data/*.tif
+data/*.tiff
+data/*.geotiff
+data/*.pdf
+*.zip
+
+# Generated outputs
+outputs/
+*.png
+*.jpg
+!frontend/assets/*.png
+!frontend/assets/*.jpg
+
+# Logs
+*.log
+logs/
+
+# Node (if added later)
+node_modules/
+
+# Misc
+.cache/
+tmp/
+temp/
+
+# Claude
+CLAUDE.md
+PLAN.md
