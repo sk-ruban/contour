@@ -1,8 +1,11 @@
-# Contour 🗺️
+# Contour ⛰️
 
-**Transform 2D topographic maps into explorable 3D terrain with an AI tour guide.**
+**🏆 2nd Place out of 200 participants — Google Gemini 3 Hackathon 2026**
 
-🚨🚨🚨 [**Watch Demo Video**](https://drive.google.com/file/d/1bTEDKPn7YTp_soc8YL3LzkOpFNMKOYcw/view?usp=sharing) 🚨🚨🚨 
+**Transform 2D topographic maps into explorable 3D terrain with Gemini Live API as a tour guide.**
+
+🚨🚨🚨 [**Watch Demo Video**](https://drive.google.com/file/d/1bTEDKPn7YTp_soc8YL3LzkOpFNMKOYcw/view?usp=sharing) 🚨🚨🚨 - I'll upload a better one asap!
+
 
 <p align="center">
   <img src="assets/image1.png" width="49%" alt="Orbit view of Kauai terrain" />
@@ -14,26 +17,26 @@ Generated from:
   <img src="assets/map.jpg" width="49%" alt="Original Map" />
 </p>
 
-Upload a USGS topo map or GeoTIFF, and Contour builds a 3D flyable terrain you can explore while chatting with Gemini about what you're seeing.
+Upload a topo map in JPG or GeoTIFF, and Contour builds a 3D flyable terrain you can explore while chatting with Gemini about what you're seeing.
+
+## Features
+
+- **📤 Upload any map** — GeoTIFF (auto-extracts bounds) or JPG/PNG (Gemini-extracted bounds)
+- **🗺️ Real elevation data** — Fetches DEM tiles from AWS Terrain Tiles
+- **🎮 Fly mode** — WASD + mouse to soar over your terrain
+- **🎤 Voice tour guide** — Talk to Gemini about the terrain using Live API
+- **🌄 Dynamic lighting** — Adjustable sun position for dramatic relief
+
 
 ## Gemini Features Used
 
 | Feature | Gemini Capability | How It's Used |
 |---------|-------------------|---------------|
-| 🗺️ **Bounds Extraction** | Vision + Text | Gemini reads lat/lon coordinates from map borders and graticules |
-| 🎤 **Voice Tour Guide** | Live API (Bidirectional Audio) | Real-time voice conversation while flying over terrain |
-| 🧠 **Contextual Narration** | System Instructions | Guide knows map name, bounds, and current flight position |
-| 🎨 **Texture Stylization** | Nano Banana Pro (via fal.ai) | Adds vibrant hypsometric-tinted textures and colours |
+| 🗺️ **Bounds Extraction** | Gemini 2.0 Flash | Gemini reads lat/lon coordinates from map borders and graticules from JPGs|
+| 🎨 **Texture Stylization** | Nano Banana Pro (via fal.ai) | Adds hypsometric-tinted textures and colours |
+| 🎤 **Voice Tour Guide** | Gemini Live API | Real-time voice conversation while flying over terrain. Guide knows map name, bounds, and current flight position |
 
 ---
-
-## Features
-
-- **📤 Upload any map** — GeoTIFF (auto-extracts bounds) or JPG/PNG (manual or AI-extracted bounds)
-- **🗺️ Real elevation data** — Fetches DEM tiles from AWS Terrain Tiles
-- **🎮 Fly mode** — WASD + mouse to soar over your terrain
-- **🎤 Voice tour guide** — Talk to Gemini about the terrain using Live API
-- **🌄 Dynamic lighting** — Adjustable sun position for dramatic relief
 
 ## Quick Start
 
@@ -44,23 +47,23 @@ cd contour
 
 # Set up environment
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and add your GEMINI_API_KEY and FAL_KEY
 
 # Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # Run
-python run.py
+uv run python run.py
 ```
 
 Open http://localhost:8000
 
 ## Usage
 
-1. **Upload a map** — Drop a GeoTIFF or topo image
-2. **Set bounds** — Auto-detected for GeoTIFF, or click "Extract with Gemini" for images
+1. **Upload a map** — Drop a GeoTIFF or JPG topo image
+2. **Set bounds** — Auto-detected for GeoTIFF, or click "Extract with Gemini" for JPG
 3. **Build terrain** — Click "Fetch Real DEM" to get elevation data
-4. **Explore** — Adjust exaggeration, enter Fly Mode (WASD + Space/C)
+4. **Explore** — Adjust scale, enter Fly Mode (WASD)
 5. **Talk to your guide** — Click "Start Voice Chat" and ask about the terrain
 
 ## Controls
@@ -69,17 +72,14 @@ Open http://localhost:8000
 |------|---------|--------|
 | Orbit | Drag | Rotate view |
 | Orbit | Scroll | Zoom in/out |
-| Fly | WASD | Move horizontally |
-| Fly | Space/C | Ascend/descend |
-| Fly | Mouse | Look around |
-| Fly | Shift | Speed boost |
+| Fly | WASD | Pitch and turn |
 
 ## Tech Stack
 
 - **Frontend**: Vanilla JS + Three.js (no build step)
 - **Backend**: FastAPI + Python
 - **Elevation**: AWS Terrain Tiles (Terrarium encoding)
-- **AI**: Gemini 2.0 Flash (bounds extraction) + Gemini Live API (voice chat)
+- **AI**: Gemini 2.0 Flash, Gemini Live API, fal.ai Nano Banana Pro
 
 ## Project Structure
 
@@ -88,38 +88,24 @@ contour/
 ├── backend/
 │   ├── main.py          # FastAPI routes
 │   ├── terrain.py       # GeoTIFF processing
-│   └── gemini_client.py # Gemini API calls
+│   ├── gemini_client.py # Gemini API calls
+│   └── fal_stylize.py   # Texture stylization
 ├── frontend/
 │   ├── index.html       # UI
 │   ├── app.js           # Three.js scene + controls
 │   ├── voice.js         # Gemini Live API voice chat
+│   ├── audio-processor.js # AudioWorklet for mic capture
 │   └── style.css        # Styling
 ├── run.py               # Entry point
-└── requirements.txt
-```
-
-## Environment Variables
-
-```bash
-GEMINI_API_KEY=your_key_here
+├── pyproject.toml       # Dependencies (uv)
+└── .env.example         # Environment template
 ```
 
 ## Sample Data
 
 USGS Historical Topographic Maps work great:
-- [USGS topoView](https://ngmdb.usgs.gov/topoview/)
+- [USGS topoView](https://ngmdb.usgs.gov/topoview/viewer/)
 - Download GeoTIFF or high-res JPG
-- Hawaiian islands recommended (dramatic terrain!)
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/upload` | POST | Upload map file |
-| `/api/extract-bounds` | POST | Use Gemini to read map coordinates |
-| `/api/generate-heightmap` | POST | Generate heightmap with Gemini |
-| `/api/gemini-key` | GET | Get API key for voice chat |
-| `/api/health` | GET | Health check |
 
 ## How It Works
 
@@ -139,12 +125,8 @@ USGS Historical Topographic Maps work great:
 - Elevation tiles: [Mapzen/AWS Terrain Tiles](https://registry.opendata.aws/terrain-tiles/)
 - Maps: [USGS National Map](https://www.usgs.gov/programs/national-geospatial-program/national-map)
 - 3D: [Three.js](https://threejs.org/)
-- AI: [Google Gemini](https://ai.google.dev/)
+- AI: [Google Gemini](https://ai.google.dev/), [fal.ai](https://fal.ai/)
 
 ## License
 
-MIT
-
----
-
-*Built for the Gemini API Developer Competition 2025* 🚀
+Apache 2.0
